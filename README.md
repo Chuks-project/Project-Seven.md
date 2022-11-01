@@ -201,4 +201,39 @@ WEBSERSERS 2 & 3
 ![WEBSERVER3 LOGGED IN](https://user-images.githubusercontent.com/65022146/199235056-9c8a9dd3-7e29-4987-8cf9-a9e80fab898e.png)
 
 
- - 
+
+
+
+
+
+
+
+## THE END OF THE PROJECT 7 IMPLEMENTATION
+
+
+
+
+
+
+
+- However, I would like to share some of the challenges and errors encountered while implementing Project 7
+
+- Firstly, I was running the command `sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www` while getting erros. I later realised that the error was owed to the fact that the Webservers does not share the same subnet ID with the NFS server
+
+-The error looks like the screenshot below:
+![error 2](https://user-images.githubusercontent.com/65022146/199238268-15b0e33d-6ab5-477f-8f3d-73fc609afafb.png)
+
+
+- Secondly, I was getting erros while selecting USERS from the Database. The error was due to the fact that no Database was selected.
+
+- The error:
+ ![dosnt exist 2](https://user-images.githubusercontent.com/65022146/199240516-5ec1bb85-d333-4ac5-b157-6e59968b0008.png)
+
+- The error was resolved when the name of the Database 'Tooling' was selected:
+ ![issue resolved with db](https://user-images.githubusercontent.com/65022146/199240952-1e9ea9c7-a381-407b-a029-79780b6146b5.png)
+
+
+
+
+
+ 
