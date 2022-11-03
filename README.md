@@ -3,18 +3,24 @@
 
 In Project Six, you implemented a WordPress based solution that is ready to be filled with content and can be used as a full fledged website or blog. Moving further we will add some more value to our solutions that your DevOps team could utilize.
 
-This project builds on the 3-tier architecture we saw earlier in Project six by adding a Network file System(NFS) to our system architecture(website). The NFS host the static files needed to server our site to the public while the database stores the dynamic data. This architecture makes our webserver stateless: meaning we can easily configure and scale our webserver up or down as need arises.
+This project builds on the 3-tier architecture we saw earlier in Project six by adding a Network file System(NFS) to our system architecture(website). The NFS host the static files needed to serve our site to the public while the database stores the dynamic data. This architecture makes our webserver stateless: meaning we can easily configure and scale our webserver up or down as need arises.
 
 In this project 7 also, you will implement a solution that consists of following components:
 
-1.Infrastructure: AWS
-2.Webserver Linux: Red Hat Enterprise Linux 8
-3.Database Server: Ubuntu 20.04 + MySQL
-4.Storage Server: Red Hat Enterprise Linux 8 + NFS Server
-5.Programming Language: PHP
-6.Code Repository: GitHub
+1. Infrastructure: AWS
 
-You shall be adopting the following steps towards implementing your Tooling Website Solution.
+2. Webserver Linux: Red Hat Enterprise Linux 8
+
+3. Database Server: Ubuntu 20.04 + MySQL
+
+4. Storage Server: Red Hat Enterprise Linux 8 + NFS Server
+
+5. Programming Language: PHP
+
+6. Code Repository: GitHub
+
+
+### You shall be adopting the following steps towards implementing your Tooling Website Solution.
 
 ## STEP 1 – PREPARE NFS SERVER
 
@@ -28,11 +34,11 @@ You shall be adopting the following steps towards implementing your Tooling Webs
 
 - Create mount points on /mnt directory for the logical volumes as follow:
         
-        `
+```
         Mount lv-apps on /mnt/apps – To be used by webservers
         Mount lv-logs on /mnt/logs – To be used by webserver logs
         Mount lv-opt on /mnt/opt – To be used by Jenkins server in Project 8
-       `
+```
 - Install NFS server, configure it to start on reboot and make sure it is up and running
 
       sudo yum -y update`
@@ -45,24 +51,23 @@ You shall be adopting the following steps towards implementing your Tooling Webs
 
 - Make sure we set up permission that will allow our Web servers to read, write and execute files on NFS:
 
-                                   
-       `sudo chown -R nobody: /mnt/apps
+```                                   
+        sudo chown -R nobody: /mnt/apps
         sudo chown -R nobody: /mnt/logs
         sudo chown -R nobody: /mnt/opt
-        `      
+              
         sudo chmod -R 777 /mnt/apps
         sudo chmod -R 777 /mnt/log
         sudo chmod -R 777 /mnt/opt
-`     
-     `sudo systemctl restart nfs-server.service`
-                                             
-- Configure access to NFS for clients within the same subnet (example of Subnet CIDR – 172.31.32.0/20 ):
+     
+        sudo systemctl restart nfs-server.service`
+```                                             
 
-      `sudo vi /etc/exports`
+
       
 - Configure access to NFS for clients within the same subnet (example of Subnet CIDR – 172.31.80.0/20 ):
 
-      `sudo vi /etc/exports`
+   `sudo vi /etc/exports`
       
   ![sudnet id](https://user-images.githubusercontent.com/65022146/199224678-732d8a65-3109-4031-8d0d-0be300129474.png)
 
@@ -70,10 +75,9 @@ You shall be adopting the following steps towards implementing your Tooling Webs
       
  - Check which port is used by NFS and open it using Security Groups (add new Inbound Rule):
 
-       `rpcinfo -p | grep nfs`
+ `rpcinfo -p | grep nfs`
        
-      
-      ![rcp info](https://user-images.githubusercontent.com/65022146/199214378-7fb9e69b-e0dd-43f5-a215-527156fcb8b3.png)
+ ![rcp info](https://user-images.githubusercontent.com/65022146/199214378-7fb9e69b-e0dd-43f5-a215-527156fcb8b3.png)
        
  - Important note: In order for NFS server to be accessible from your client, you must also open following ports: TCP 111, UDP 111, UDP 2049 as seen below:
  
@@ -119,7 +123,7 @@ You shall be adopting the following steps towards implementing your Tooling Webs
 
 - Verify that NFS was mounted successfully by running df -h. Make sure that the changes will persist on Web Server after reboot:
 
-      `sudo vi /etc/fstab`
+  `sudo vi /etc/fstab`
 
 - Add the following line
 
@@ -129,7 +133,7 @@ You shall be adopting the following steps towards implementing your Tooling Webs
 - Install Remi’s repository, Apache and PHP
 
      
- `   
+```  
      sudo yum install httpd -y
 
      sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
@@ -147,7 +151,7 @@ You shall be adopting the following steps towards implementing your Tooling Webs
      sudo systemctl enable php-fpm
 
      setsebool -P httpd_execmem 1
-`
+```     
 
 - Repeat steps 1-5 for another 2 Web Servers.
 
@@ -160,7 +164,7 @@ You shall be adopting the following steps towards implementing your Tooling Webs
 - Deploy the tooling website’s code to the Webserver. Ensure that the html folder from the repository is deployed to /var/www/html
 
 
-#### In the images below, it can be confirmed that our Web Servers can serve the same content from shared storage solutions, in our case – NFS Server and MySQL database. The webservers 2 and 3 were able to receive and produce the message(Commands) from the Ist Webserver
+#### In the images below, it can be confirmed that our Web Servers can serve the same content from shared storage solutions, in our case – NFS Server and MySQL database. The web servers 2 and 3 were able to receive and produce the message(Commands) from the Ist Webserver
 
 ### WEBSERVER 1
 
@@ -184,10 +188,10 @@ WEBSERSERS 2 & 3
 
 - Create in MySQL a new admin user with username: myuser and password: password:
       
-   `       
+```       
     INSERT INTO ‘users’ (‘id’, ‘username’, ‘password’, ’email’, ‘user_type’, ‘status’) VALUES
     -> (1, ‘myuser’, ‘5f4dcc3b5aa765d61d8327deb882cf99’, ‘user@mail.com’, ‘admin’, ‘1’);
-    `
+```   
     
  - Open the website and input the public IP address in your browser
  
@@ -201,17 +205,7 @@ WEBSERSERS 2 & 3
 ![WEBSERVER3 LOGGED IN](https://user-images.githubusercontent.com/65022146/199235056-9c8a9dd3-7e29-4987-8cf9-a9e80fab898e.png)
 
 
-
-
-
-
-
-
-
 ## THE END OF THE PROJECT 7 IMPLEMENTATION
-
-
-
 
 
 
